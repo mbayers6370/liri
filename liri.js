@@ -14,26 +14,25 @@ function searchConcerts() {
     var URL = "https://rest.bandsintown.com/artists/" + term + "/events?app_id=codingbootcamp";
 
     axios.get(URL).then(function (response) {
-        for (var i = 0; i < response.data.length; i++) {
-            console.log("Name of the venue: " + response.data[i].venue.name);
-            if (response.data[i].venue.region !== "") {
-                console.log("Venue location: " + response.data[i].venue.city + ", " +
-                    response.data[i].venue.region + ", " + response.data[i].venue.country);
+        
+            console.log("Name of the venue: " + response.data[0].venue.name);
+            if (response.data[0].venue.region !== "") {
+                console.log("Venue location: " + response.data[0].venue.city + ", " +
+                    response.data[0].venue.region + ", " + response.data[0].venue.country);
             }
             else {
-                console.log("Venue location: " + response.data[i].venue.city + ", " +
-                    response.data[i].venue.country);
+                console.log("Venue location: " + response.data[0].venue.city + ", " +
+                    response.data[0].venue.country);
             }
-            console.log("Date of the Event: " + moment(response.data[i].datetime).format("MM/DD/YYYY"));
+            console.log("Date of the Event: " + moment(response.data[0].datetime).format("MM/DD/YYYY"));
             console.log(dashes);
-        }
     })
-    .catch(function(error) {
-        console.log(error);
-    })
+        .catch(function (error) {
+            console.log(error);
+        })
 }
 
-function searchSpotify(){
+function searchSpotify() {
     spotify.search({
         type: "track",
         query: term,
@@ -44,23 +43,33 @@ function searchSpotify(){
         console.log("Preview Song link: " + response.tracks.items[0].href);
         console.log("Album: " + response.tracks.items[0].album.name);
         console.log(dashes);
-      });
+    });
+
+    fs.appendFile("log.txt", showData, function (err) {
+
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("Content Added!");
+        }
+
+    });
 };
 
-function searchMovies(){
+function searchMovies() {
     axios
-      .get("http://www.omdbapi.com/?t=" + term + "&y=&plot=short&apikey=trilogy")
-      .then(function (response) {
-        console.log("Title: " + response.data.Title);
-        console.log("Year Released: " + response.data.Year);
-        console.log("IMDB Rating: " + response.data.imdbRating);
-        console.log("Rotten Tomatoes Rating: " + response.data.Ratings[1].Value);
-        console.log("Country/Countries Produced: " + response.data.Country);
-        console.log("Language(s): " + response.data.Language);
-        console.log("Plot: " + response.data.Plot);
-        console.log("Actors: " + response.data.Actors);
-        console.log(dashes)
-});
+        .get("http://www.omdbapi.com/?t=" + term + "&y=&plot=short&apikey=trilogy")
+        .then(function (response) {
+            console.log("Title: " + response.data.Title);
+            console.log("Year Released: " + response.data.Year);
+            console.log("IMDB Rating: " + response.data.imdbRating);
+            console.log("Rotten Tomatoes Rating: " + response.data.Ratings[1].Value);
+            console.log("Country/Countries Produced: " + response.data.Country);
+            console.log("Language(s): " + response.data.Language);
+            console.log("Plot: " + response.data.Plot);
+            console.log("Actors: " + response.data.Actors);
+            console.log(dashes)
+        });
 };
 
 
