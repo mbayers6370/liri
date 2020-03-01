@@ -10,14 +10,17 @@ var term = process.argv.slice(3).join("+");
 var searchTerm = process.argv.slice(3).join(" ");
 var dashes = "\n-----------------------------------------------"
 
-function searchConcerts() {
-    var URL = "https://rest.bandsintown.com/artists/" + term + "/events?app_id=codingbootcamp";
+function searchConcerts(term) {
+    var URL = "https://rest.bandsintown.com/artists/" + searchTerm + "/events?app_id=codingbootcamp";
 
     axios.get(URL).then(function (response) {
-        
-            console.log("Name of the venue: " + response.data[0].venue.name);
+
+
+            console.log(dashes + "\n");
+
+            console.log("Venue: " + response.data[0].venue.name);
             if (response.data[0].venue.region !== "") {
-                console.log("Venue location: " + response.data[0].venue.city + ", " +
+                console.log("Location: " + response.data[0].venue.city + ", " +
                     response.data[0].venue.region + ", " + response.data[0].venue.country);
             }
             else {
@@ -32,34 +35,26 @@ function searchConcerts() {
         })
 }
 
-function searchSpotify() {
+function searchSpotify(term) {
     spotify.search({
         type: "track",
         query: term,
         limit: 1
     }).then(function (response) {
+        console.log(dashes + "\n");
         console.log("Artist(s): " + response.tracks.items[0].album.artists[0].name);
         console.log("Track: " + response.tracks.items[0].name);
         console.log("Preview Song link: " + response.tracks.items[0].href);
         console.log("Album: " + response.tracks.items[0].album.name);
         console.log(dashes);
     });
-
-    fs.appendFile("log.txt", showData, function (err) {
-
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("Content Added!");
-        }
-
-    });
 };
 
 function searchMovies() {
     axios
-        .get("http://www.omdbapi.com/?t=" + term + "&y=&plot=short&apikey=trilogy")
+        .get("http://www.omdbapi.com/?t=" + searchTerm + "&y=&plot=short&apikey=trilogy")
         .then(function (response) {
+            console.log(dashes + "\n");
             console.log("Title: " + response.data.Title);
             console.log("Year Released: " + response.data.Year);
             console.log("IMDB Rating: " + response.data.imdbRating);
@@ -72,8 +67,20 @@ function searchMovies() {
         });
 };
 
+function doThis(){
+	fs.readFile('random.txt', 'utf8', function(err, data){
 
-var run = function (search, term) {
+        var doArr = data.split(',');
+        run(doArr[0], doArr[1]);
+
+		if (err){ 
+			return console.log(err);
+		}
+	});
+}
+
+
+function run(search, searchTerm) {
     // case switchs
     switch (search) {
         case 'concert-this':
@@ -82,13 +89,14 @@ var run = function (search, term) {
             break;
         case 'spotify-this-song':
             console.log("Searching Spotify: " + searchTerm + "\n")
-            searchSpotify();
+            searchSpotify(searchTerm);
             break;
         case 'movie-this':
             console.log("Searching Movie: " + searchTerm + "\n")
             searchMovies();
             break;
         case 'do-what-it-says':
+            doThis();
             console.log("Searching Do What It Says: " + searchTerm + "\n")
             break;
         default:
