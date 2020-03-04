@@ -43,4 +43,4 @@ This command is special in that it takes in two parameters. The first will go in
 
 -----------------------------------------------------------------------
 
-![](liri.GIF)
+![](liri.gif)
